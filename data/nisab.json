@@ -1,0 +1,14 @@
+{
+  "gold": {
+    "price_per_gram": 8500,
+    "nisab_grams": 87.48,
+    "nisab_value": 743580,
+    "last_updated": "2024-01-15"
+  },
+  "silver": {
+    "price_per_gram": 110,
+    "nisab_grams": 612.36,
+    "nisab_value": 67359.6,
+    "last_updated": "2024-01-15"
+  }
+}

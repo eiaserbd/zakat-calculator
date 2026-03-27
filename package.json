@@ -1,0 +1,6 @@
+{
+  "name": "zakat-calculator-api",
+  "version": "1.0.0",
+  "description": "Islamic Zakat Calculator API",
+  "main": "api/calculate.js"
+}

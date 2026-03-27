@@ -238,13 +238,6 @@
       padding: 24px;
     }
 
-    .doc-grid {
-      display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
-      gap: 18px;
-      margin-top: 18px;
-    }
-
     .docs-toggle {
       margin-top: 16px;
     }
@@ -263,10 +256,17 @@
       animation: fadeIn 0.25s ease;
     }
 
+    .doc-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 18px;
+    }
+
     .doc-card {
       border: 1px solid var(--line);
       border-radius: 20px;
-      background: rgba(255, 255, 255, 0.72);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(245, 239, 226, 0.82));
       padding: 18px;
     }
 
@@ -275,25 +275,34 @@
       font-size: 1.05rem;
     }
 
-    .doc-list {
+    .doc-card p {
       margin: 0;
-      padding-left: 18px;
       color: var(--muted);
       line-height: 1.7;
     }
 
-    .endpoint {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      align-items: center;
-      padding: 12px 0;
-      border-bottom: 1px solid var(--line);
+    .api-link {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      border: 1px solid rgba(13, 107, 77, 0.12);
+      border-radius: 22px;
+      padding: 20px;
+      background: linear-gradient(135deg, rgba(13, 107, 77, 0.08), rgba(197, 139, 27, 0.08));
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
     }
 
-    .endpoint:last-child {
-      border-bottom: 0;
-      padding-bottom: 0;
+    .api-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 28px rgba(42, 52, 45, 0.1);
+      border-color: rgba(13, 107, 77, 0.28);
+    }
+
+    .api-link-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
     }
 
     .method {
@@ -314,9 +323,56 @@
       color: #fff;
     }
 
-    .endpoint code {
+    .api-link-title {
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
+    .api-link-url {
+      display: block;
+      margin-top: 10px;
       font-size: 0.92rem;
       color: var(--ink);
+      word-break: break-word;
+    }
+
+    .doc-steps {
+      display: grid;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .doc-step {
+      display: grid;
+      grid-template-columns: 42px 1fr;
+      gap: 14px;
+      align-items: start;
+      padding: 16px 18px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.72);
+    }
+
+    .doc-step-number {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--primary), var(--primary-strong));
+      color: #fff;
+    }
+
+    .doc-step strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .doc-step p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.7;
     }
 
     pre {
@@ -554,54 +610,52 @@
 
     <section class="docs">
       <h2>API</h2>
-      <p class="muted">Simple, user-friendly API documentation for developers, students, and anyone building Islamic finance tools.</p>
+      <p class="muted">Simple, modern, clickable API documentation.</p>
       <div class="docs-toggle">
         <button type="button" id="docsToggleButton">Click for API documentation</button>
       </div>
       <div class="docs-body" id="docsBody">
         <div class="doc-grid">
-          <div class="doc-card">
-            <h3>Why This API Is Easy To Use</h3>
-            <ul class="doc-list">
-              <li>Start quickly with one `GET` endpoint and one `POST` endpoint.</li>
-              <li>Get live Nisab values with currency conversion.</li>
-              <li>Calculate Zakat with smart insights, not only a number.</li>
-              <li>Supports both `gold` and `silver` Nisab basis.</li>
-              <li>Updated with 50 supported currencies.</li>
-            </ul>
-          </div>
-          <div class="doc-card">
-            <h3>Endpoints</h3>
-            <div class="endpoint">
+          <a class="api-link" href="https://zakat-calculator-coral-one.vercel.app/api/nisab?currency=USD" target="_blank" rel="noreferrer">
+            <div class="api-link-head">
               <span class="method get">GET</span>
-              <code>https://zakat-calculator-coral-one.vercel.app/api/nisab?currency=USD</code>
+              <span class="api-link-title">Get Nisab values</span>
             </div>
-            <div class="endpoint">
+            <p>Open live Nisab data in your browser with the selected currency.</p>
+            <span class="api-link-url">https://zakat-calculator-coral-one.vercel.app/api/nisab?currency=USD</span>
+          </a>
+          <a class="api-link" href="https://zakat-calculator-coral-one.vercel.app/" target="_blank" rel="noreferrer">
+            <div class="api-link-head">
               <span class="method">POST</span>
-              <code>https://zakat-calculator-coral-one.vercel.app/api/calculate</code>
+              <span class="api-link-title">Calculate Zakat</span>
+            </div>
+            <p>Send assets and liabilities to calculate Zakat and receive smart guidance.</p>
+            <span class="api-link-url">https://zakat-calculator-coral-one.vercel.app/api/calculate</span>
+          </a>
+        </div>
+        <div class="doc-steps">
+          <div class="doc-step">
+            <div class="doc-step-number">1</div>
+            <div>
+              <strong>Check Nisab first</strong>
+              <p>Click the GET endpoint to view the current Nisab threshold in your preferred currency.</p>
+            </div>
+          </div>
+          <div class="doc-step">
+            <div class="doc-step-number">2</div>
+            <div>
+              <strong>Send your calculation request</strong>
+              <p>Use the POST endpoint from your website, app, or backend with assets, liabilities, currency, and Nisab basis.</p>
+            </div>
+          </div>
+          <div class="doc-step">
+            <div class="doc-step-number">3</div>
+            <div>
+              <strong>Show the result to users</strong>
+              <p>Read the JSON response and display total assets, net wealth, Nisab threshold, Zakat due, and helpful guidance.</p>
             </div>
           </div>
         </div>
-        <div class="doc-grid">
-          <div class="doc-card">
-            <h3>Quick Start</h3>
-            <ul class="doc-list">
-              <li>Use `GET /api/nisab` to show the current Nisab threshold.</li>
-              <li>Send assets and liabilities to `POST /api/calculate`.</li>
-              <li>Read `calculation`, `nisab`, and `insights` from the JSON response.</li>
-            </ul>
-          </div>
-          <div class="doc-card">
-            <h3>Best For Users</h3>
-            <ul class="doc-list">
-              <li>Zakat calculator websites</li>
-              <li>Islamic finance mobile apps</li>
-              <li>Educational demos and student projects</li>
-              <li>Backend services needing simple JSON integration</li>
-            </ul>
-          </div>
-        </div>
-        <pre id="apiExample"></pre>
       </div>
     </section>
 
@@ -624,7 +678,6 @@
     const currencySelect = document.getElementById('currency');
     const nisabBasisSelect = document.getElementById('nisabBasis');
     const statusText = document.getElementById('statusText');
-    const apiExample = document.getElementById('apiExample');
     const docsBody = document.getElementById('docsBody');
     const docsToggleButton = document.getElementById('docsToggleButton');
     const inputs = Array.from(document.querySelectorAll('input[type="number"]'));
@@ -729,21 +782,6 @@
 
       populateCurrencies(data.supported_currencies, data.currency);
       setNisabMeta(data);
-      apiExample.textContent = [
-        'GET https://zakat-calculator-coral-one.vercel.app/api/nisab?currency=USD',
-        '',
-        'POST https://zakat-calculator-coral-one.vercel.app/api/calculate',
-        'Content-Type: application/json',
-        '',
-        `// Supported currencies (${data.supported_currencies.length}): ${data.supported_currencies.join(', ')}`,
-        '',
-        JSON.stringify({
-          assets: { cash: 500000, gold: 125000, savings: 220000 },
-          liabilities: { debts: 70000, expenses: 25000 },
-          currency: data.currency,
-          nisab_basis: nisabBasisSelect.value
-        }, null, 2)
-      ].join('\n');
     }
 
     form.addEventListener('submit', async (event) => {

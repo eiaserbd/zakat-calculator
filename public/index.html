@@ -453,6 +453,42 @@
       line-height: 1.7;
     }
 
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+
+    .social-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(245, 213, 138, 0.18);
+      color: #f5d58a;
+      text-decoration: none;
+    }
+
+    .social-link:hover {
+      background: rgba(255, 255, 255, 0.14);
+      text-decoration: none;
+    }
+
+    .social-icon {
+      width: 20px;
+      height: 20px;
+      display: inline-grid;
+      place-items: center;
+      border-radius: 50%;
+      background: rgba(245, 213, 138, 0.14);
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
     .footer a {
       color: #f5d58a;
       text-decoration: none;
@@ -729,6 +765,16 @@ Content-Type: application/json</div>
       <div class="bismillah">بسم الله الرحمن الرحيم</div>
       <p>Made with ❤️ by <a href="https://github.com/eiaserbd" target="_blank" rel="noreferrer">Eiaser Hosen</a></p>
       <p>Building digital tools for the Ummah 🤲</p>
+      <div class="social-links">
+        <a class="social-link" href="https://web.facebook.com/NuqtaLab" target="_blank" rel="noreferrer">
+          <span class="social-icon">f</span>
+          <span>Join Facebook</span>
+        </a>
+        <a class="social-link" href="https://www.youtube.com/@eLearnney" target="_blank" rel="noreferrer">
+          <span class="social-icon">▶</span>
+          <span>YouTube</span>
+        </a>
+      </div>
       <p class="dua-line">🤲 رَبَّنَا تَقَبَّلْ مِنَّا إِنَّكَ أَنْتَ السَّمِيعُ الْعَلِيمُ</p>
       <p class="dua-line">🤲 رَبِّ زِدْنِي عِلْمًا</p>
     </footer>

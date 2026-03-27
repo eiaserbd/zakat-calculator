@@ -238,6 +238,87 @@
       padding: 24px;
     }
 
+    .doc-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 18px;
+      margin-top: 18px;
+    }
+
+    .docs-toggle {
+      margin-top: 16px;
+    }
+
+    .docs-toggle button {
+      background: linear-gradient(135deg, var(--gold), #aa7417);
+      color: #fff;
+    }
+
+    .docs-body {
+      display: none;
+    }
+
+    .docs-body.show {
+      display: block;
+      animation: fadeIn 0.25s ease;
+    }
+
+    .doc-card {
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.72);
+      padding: 18px;
+    }
+
+    .doc-card h3 {
+      margin-bottom: 10px;
+      font-size: 1.05rem;
+    }
+
+    .doc-list {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .endpoint {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .endpoint:last-child {
+      border-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .method {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 58px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #fff;
+      background: var(--primary);
+    }
+
+    .method.get {
+      background: var(--gold);
+      color: #fff;
+    }
+
+    .endpoint code {
+      font-size: 0.92rem;
+      color: var(--ink);
+    }
+
     pre {
       margin: 14px 0 0;
       padding: 16px;
@@ -258,8 +339,59 @@
       color: var(--muted);
     }
 
+    .footer {
+      margin-top: 28px;
+      padding: 28px 24px;
+      border-radius: 28px;
+      background: linear-gradient(135deg, #163328, #0e241c);
+      color: #f3efe4;
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+
+    .footer .bismillah {
+      font-size: clamp(1.4rem, 4vw, 2rem);
+      margin-bottom: 14px;
+      color: #f5d58a;
+    }
+
+    .footer p {
+      margin: 8px 0;
+      line-height: 1.7;
+    }
+
+    .footer a {
+      color: #f5d58a;
+      text-decoration: none;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+
+    .dua-line {
+      margin-top: 12px;
+      font-size: 1.02rem;
+      color: #f8f4ea;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
     @media (max-width: 900px) {
       .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .doc-grid {
         grid-template-columns: 1fr;
       }
     }
@@ -296,8 +428,8 @@
       <div class="eyebrow">Islamic Wealth Tool</div>
       <h1>Smart Zakat Calculator</h1>
       <p>
-        Enter your assets and liabilities, pick a Nisab basis, and get a clearer answer with practical guidance.
-        The calculator uses the live values served by this API.
+        Enter your assets and liabilities, choose your Nisab basis, and get a clear Zakat result with practical guidance.
+        Click for API documentation to connect this calculator with your website, app, or service.
       </p>
       <div class="quote">
         "Pay Zakat to purify your wealth and support those in need."
@@ -312,19 +444,7 @@
         <div class="grid" style="margin-top: 18px;">
           <div class="field">
             <label for="currency">Currency</label>
-            <select id="currency" name="currency">
-              <option value="BDT">BDT</option>
-              <option value="USD">USD</option>
-              <option value="EUR">EUR</option>
-              <option value="GBP">GBP</option>
-              <option value="CAD">CAD</option>
-              <option value="AUD">AUD</option>
-              <option value="INR">INR</option>
-              <option value="PKR">PKR</option>
-              <option value="SAR">SAR</option>
-              <option value="AED">AED</option>
-              <option value="MYR">MYR</option>
-            </select>
+            <select id="currency" name="currency"></select>
           </div>
           <div class="field">
             <label for="nisabBasis">Nisab Basis</label>
@@ -434,9 +554,67 @@
 
     <section class="docs">
       <h2>API</h2>
-      <p class="muted">Use these endpoints in your website, mobile app, or backend service to fetch Nisab values and calculate Zakat.</p>
-      <pre id="apiExample"></pre>
+      <p class="muted">Simple, user-friendly API documentation for developers, students, and anyone building Islamic finance tools.</p>
+      <div class="docs-toggle">
+        <button type="button" id="docsToggleButton">Click for API documentation</button>
+      </div>
+      <div class="docs-body" id="docsBody">
+        <div class="doc-grid">
+          <div class="doc-card">
+            <h3>Why This API Is Easy To Use</h3>
+            <ul class="doc-list">
+              <li>Start quickly with one `GET` endpoint and one `POST` endpoint.</li>
+              <li>Get live Nisab values with currency conversion.</li>
+              <li>Calculate Zakat with smart insights, not only a number.</li>
+              <li>Supports both `gold` and `silver` Nisab basis.</li>
+              <li>Updated with 50 supported currencies.</li>
+            </ul>
+          </div>
+          <div class="doc-card">
+            <h3>Endpoints</h3>
+            <div class="endpoint">
+              <span class="method get">GET</span>
+              <code>https://zakat-calculator-coral-one.vercel.app/api/nisab?currency=USD</code>
+            </div>
+            <div class="endpoint">
+              <span class="method">POST</span>
+              <code>https://zakat-calculator-coral-one.vercel.app/api/calculate</code>
+            </div>
+          </div>
+        </div>
+        <div class="doc-grid">
+          <div class="doc-card">
+            <h3>Quick Start</h3>
+            <ul class="doc-list">
+              <li>Use `GET /api/nisab` to show the current Nisab threshold.</li>
+              <li>Send assets and liabilities to `POST /api/calculate`.</li>
+              <li>Read `calculation`, `nisab`, and `insights` from the JSON response.</li>
+            </ul>
+          </div>
+          <div class="doc-card">
+            <h3>Best For Users</h3>
+            <ul class="doc-list">
+              <li>Zakat calculator websites</li>
+              <li>Islamic finance mobile apps</li>
+              <li>Educational demos and student projects</li>
+              <li>Backend services needing simple JSON integration</li>
+            </ul>
+          </div>
+        </div>
+        <pre id="apiExample"></pre>
+      </div>
     </section>
+
+    <footer class="footer">
+      <div class="bismillah">بسم الله الرحمن الرحيم</div>
+      <p>
+        Made with ❤️ by
+        <a href="https://github.com/eiaserbd" target="_blank" rel="noreferrer">Eiaser Hosen</a>
+      </p>
+      <p>Building digital tools for the Ummah 🤲</p>
+      <p class="dua-line">🤲 رَبَّنَا تَقَبَّلْ مِنَّا إِنَّكَ أَنْتَ السَّمِيعُ الْعَلِيمُ</p>
+      <p class="dua-line">🤲 رَبِّ زِدْنِي عِلْمًا</p>
+    </footer>
   </main>
 
   <script>
@@ -447,7 +625,18 @@
     const nisabBasisSelect = document.getElementById('nisabBasis');
     const statusText = document.getElementById('statusText');
     const apiExample = document.getElementById('apiExample');
+    const docsBody = document.getElementById('docsBody');
+    const docsToggleButton = document.getElementById('docsToggleButton');
     const inputs = Array.from(document.querySelectorAll('input[type="number"]'));
+    let supportedCurrencies = [];
+
+    function populateCurrencies(currencies, selectedCurrency) {
+      supportedCurrencies = currencies.slice();
+      currencySelect.innerHTML = currencies.map((currency) => {
+        const selected = currency === selectedCurrency ? ' selected' : '';
+        return `<option value="${currency}"${selected}>${currency}</option>`;
+      }).join('');
+    }
 
     function formatMoney(amount, currency) {
       return new Intl.NumberFormat('en-US', {
@@ -538,14 +727,15 @@
         throw new Error(data.error || 'Unable to load Nisab values.');
       }
 
+      populateCurrencies(data.supported_currencies, data.currency);
       setNisabMeta(data);
       apiExample.textContent = [
-        `GET ${window.location.origin}/api/nisab?currency=${data.currency}`,
+        'GET https://zakat-calculator-coral-one.vercel.app/api/nisab?currency=USD',
         '',
-        `POST ${window.location.origin}/api/calculate`,
+        'POST https://zakat-calculator-coral-one.vercel.app/api/calculate',
         'Content-Type: application/json',
         '',
-        '// Supported currencies: BDT, USD, EUR, GBP, CAD, AUD, INR, PKR, SAR, AED, MYR',
+        `// Supported currencies (${data.supported_currencies.length}): ${data.supported_currencies.join(', ')}`,
         '',
         JSON.stringify({
           assets: { cash: 500000, gold: 125000, savings: 220000 },
@@ -603,6 +793,13 @@
       refreshNisab().catch((error) => {
         statusText.textContent = error.message;
       });
+    });
+
+    docsToggleButton.addEventListener('click', () => {
+      docsBody.classList.toggle('show');
+      docsToggleButton.textContent = docsBody.classList.contains('show')
+        ? 'Hide API documentation'
+        : 'Click for API documentation';
     });
 
     nisabBasisSelect.addEventListener('change', () => {

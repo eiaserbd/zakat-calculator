@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Smart Zakat calculator with live Nisab lookup and guided results.">
+  <meta name="description" content="Smart Zakat calculator with detailed API documentation and guided results.">
   <title>Zakat Calculator</title>
   <style>
     :root {
@@ -20,9 +20,7 @@
       --shadow: 0 18px 40px rgba(42, 52, 45, 0.12);
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -36,14 +34,12 @@
     }
 
     .page {
-      width: min(1100px, calc(100% - 32px));
+      width: min(1120px, calc(100% - 32px));
       margin: 0 auto;
       padding: 32px 0 48px;
     }
 
-    .hero,
-    .panel,
-    .docs {
+    .hero, .panel, .docs {
       background: var(--card);
       border: 1px solid var(--line);
       border-radius: 28px;
@@ -64,9 +60,7 @@
       margin-bottom: 10px;
     }
 
-    h1,
-    h2,
-    h3 {
+    h1, h2, h3 {
       margin: 0;
       font-weight: 700;
     }
@@ -78,11 +72,29 @@
     }
 
     .hero p {
-      max-width: 58ch;
+      max-width: 60ch;
       margin: 16px 0 0;
       color: var(--muted);
       font-size: 1.05rem;
       line-height: 1.7;
+    }
+
+    .hero-docs-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 16px;
+      padding: 12px 18px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--gold), #aa7417);
+      color: #fff;
+      text-decoration: none;
+      font-weight: 700;
+      box-shadow: 0 10px 24px rgba(197, 139, 27, 0.2);
+    }
+
+    .hero-docs-link:hover {
+      transform: translateY(-1px);
     }
 
     .quote {
@@ -100,9 +112,7 @@
       align-items: start;
     }
 
-    .panel {
-      padding: 24px;
-    }
+    .panel { padding: 24px; }
 
     .grid {
       display: grid;
@@ -116,16 +126,9 @@
       gap: 8px;
     }
 
-    .field.full {
-      grid-column: 1 / -1;
-    }
+    label { font-size: 0.95rem; }
 
-    label {
-      font-size: 0.95rem;
-    }
-
-    input,
-    select {
+    input, select {
       width: 100%;
       padding: 14px 16px;
       border-radius: 16px;
@@ -135,8 +138,7 @@
       font: inherit;
     }
 
-    input:focus,
-    select:focus {
+    input:focus, select:focus {
       outline: 2px solid rgba(13, 107, 77, 0.18);
       border-color: rgba(13, 107, 77, 0.45);
     }
@@ -157,9 +159,7 @@
       transition: transform 0.18s ease, opacity 0.18s ease, background 0.18s ease;
     }
 
-    button:hover {
-      transform: translateY(-1px);
-    }
+    button:hover { transform: translateY(-1px); }
 
     .primary {
       background: linear-gradient(135deg, var(--primary), var(--primary-strong));
@@ -211,10 +211,7 @@
       margin-top: 8px;
     }
 
-    .insights,
-    .docs {
-      margin-top: 24px;
-    }
+    .insights, .docs { margin-top: 24px; }
 
     .insights-list {
       display: grid;
@@ -234,22 +231,15 @@
       margin-bottom: 6px;
     }
 
-    .docs {
-      padding: 24px;
-    }
-
-    .docs-toggle {
-      margin-top: 16px;
-    }
+    .docs { padding: 24px; }
+    .docs-toggle { margin-top: 16px; }
 
     .docs-toggle button {
       background: linear-gradient(135deg, var(--gold), #aa7417);
       color: #fff;
     }
 
-    .docs-body {
-      display: none;
-    }
+    .docs-body { display: none; }
 
     .docs-body.show {
       display: block;
@@ -262,6 +252,8 @@
       gap: 18px;
       margin-top: 18px;
     }
+
+    .doc-grid.single { grid-template-columns: 1fr; }
 
     .doc-card {
       border: 1px solid var(--line);
@@ -281,28 +273,13 @@
       line-height: 1.7;
     }
 
-    .api-link {
-      display: block;
-      text-decoration: none;
-      color: inherit;
-      border: 1px solid rgba(13, 107, 77, 0.12);
-      border-radius: 22px;
-      padding: 20px;
-      background: linear-gradient(135deg, rgba(13, 107, 77, 0.08), rgba(197, 139, 27, 0.08));
-      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
-    }
-
-    .api-link:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 16px 28px rgba(42, 52, 45, 0.1);
-      border-color: rgba(13, 107, 77, 0.28);
-    }
-
-    .api-link-head {
+    .doc-head {
       display: flex;
+      justify-content: space-between;
       align-items: center;
       gap: 12px;
       margin-bottom: 10px;
+      flex-wrap: wrap;
     }
 
     .method {
@@ -318,21 +295,70 @@
       background: var(--primary);
     }
 
-    .method.get {
-      background: var(--gold);
-      color: #fff;
+    .method.get { background: var(--gold); }
+    .doc-title { font-weight: 700; font-size: 1rem; }
+
+    .copy-btn {
+      border-radius: 999px;
+      padding: 10px 14px;
+      background: rgba(13, 107, 77, 0.1);
+      color: var(--primary);
+      border: 1px solid rgba(13, 107, 77, 0.16);
+      font-size: 0.9rem;
     }
 
-    .api-link-title {
-      font-weight: 700;
-      font-size: 1rem;
+    .copy-btn:hover { background: rgba(13, 107, 77, 0.16); }
+
+    .doc-list {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+      line-height: 1.8;
     }
 
-    .api-link-url {
-      display: block;
-      margin-top: 10px;
-      font-size: 0.92rem;
+    .api-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+      overflow: hidden;
+      border-radius: 16px;
+    }
+
+    .api-table th,
+    .api-table td {
+      text-align: left;
+      vertical-align: top;
+      padding: 14px 12px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .api-table th {
+      background: rgba(13, 107, 77, 0.08);
       color: var(--ink);
+      font-size: 0.92rem;
+    }
+
+    .api-table td {
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.58);
+      line-height: 1.6;
+    }
+
+    .api-table code {
+      color: var(--ink);
+      font-size: 0.9rem;
+    }
+
+    .code-block {
+      margin: 14px 0 0;
+      padding: 16px;
+      overflow: auto;
+      border-radius: 18px;
+      background: #18241f;
+      color: #f3efe4;
+      font-size: 0.9rem;
+      line-height: 1.7;
+      white-space: pre-wrap;
       word-break: break-word;
     }
 
@@ -375,19 +401,30 @@
       line-height: 1.7;
     }
 
-    pre {
-      margin: 14px 0 0;
-      padding: 16px;
-      overflow: auto;
-      border-radius: 18px;
-      background: #18241f;
-      color: #f3efe4;
-      font-size: 0.9rem;
+    .field-table {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
     }
 
-    .muted {
-      color: var(--muted);
+    .field-row {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 14px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid var(--line);
     }
+
+    .field-name { font-weight: 700; color: var(--ink); }
+
+    .field-desc {
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .muted { color: var(--muted); }
 
     .status {
       min-height: 24px;
@@ -421,9 +458,7 @@
       text-decoration: none;
     }
 
-    .footer a:hover {
-      text-decoration: underline;
-    }
+    .footer a:hover { text-decoration: underline; }
 
     .dua-line {
       margin-top: 12px;
@@ -432,49 +467,25 @@
     }
 
     @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(6px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     @media (max-width: 900px) {
-      .layout {
-        grid-template-columns: 1fr;
-      }
-
-      .doc-grid {
-        grid-template-columns: 1fr;
-      }
+      .layout, .doc-grid { grid-template-columns: 1fr; }
+      .field-row { grid-template-columns: 1fr; }
     }
 
     @media (max-width: 640px) {
       .page {
-        width: min(100% - 20px, 1100px);
+        width: min(100% - 20px, 1120px);
         padding-top: 20px;
       }
 
-      .hero,
-      .panel,
-      .docs {
-        border-radius: 22px;
-      }
-
-      .grid {
-        grid-template-columns: 1fr;
-      }
-
-      .actions {
-        flex-direction: column;
-      }
-
-      button {
-        width: 100%;
-      }
+      .hero, .panel, .docs { border-radius: 22px; }
+      .grid { grid-template-columns: 1fr; }
+      .actions { flex-direction: column; }
+      button { width: 100%; }
     }
   </style>
 </head>
@@ -487,9 +498,8 @@
         Enter your assets and liabilities, choose your Nisab basis, and get a clear Zakat result with practical guidance.
         Click for API documentation to connect this calculator with your website, app, or service.
       </p>
-      <div class="quote">
-        "Pay Zakat to purify your wealth and support those in need."
-      </div>
+      <a href="#api-documentation" class="hero-docs-link">Click for API documentation</a>
+      <div class="quote">"Pay Zakat to purify your wealth and support those in need."</div>
     </section>
 
     <section class="layout">
@@ -509,54 +519,18 @@
               <option value="silver">Silver</option>
             </select>
           </div>
-          <div class="field">
-            <label for="cash">Cash</label>
-            <input id="cash" name="cash" type="number" min="0" step="0.01" placeholder="0">
-          </div>
-          <div class="field">
-            <label for="gold">Gold value</label>
-            <input id="gold" name="gold" type="number" min="0" step="0.01" placeholder="0">
-          </div>
-          <div class="field">
-            <label for="silver">Silver value</label>
-            <input id="silver" name="silver" type="number" min="0" step="0.01" placeholder="0">
-          </div>
-          <div class="field">
-            <label for="savings">Savings</label>
-            <input id="savings" name="savings" type="number" min="0" step="0.01" placeholder="0">
-          </div>
-          <div class="field">
-            <label for="investments">Investments</label>
-            <input id="investments" name="investments" type="number" min="0" step="0.01" placeholder="0">
-          </div>
-          <div class="field">
-            <label for="business">Business assets</label>
-            <input id="business" name="business" type="number" min="0" step="0.01" placeholder="0">
-          </div>
-          <div class="field">
-            <label for="receivables">Receivables</label>
-            <input id="receivables" name="receivables" type="number" min="0" step="0.01" placeholder="0">
-          </div>
-          <div class="field">
-            <label for="otherAssets">Other eligible assets</label>
-            <input id="otherAssets" name="otherAssets" type="number" min="0" step="0.01" placeholder="0">
-          </div>
-          <div class="field">
-            <label for="debts">Short-term debts</label>
-            <input id="debts" name="debts" type="number" min="0" step="0.01" placeholder="0">
-          </div>
-          <div class="field">
-            <label for="expenses">Immediate expenses</label>
-            <input id="expenses" name="expenses" type="number" min="0" step="0.01" placeholder="0">
-          </div>
-          <div class="field">
-            <label for="payables">Other payables</label>
-            <input id="payables" name="payables" type="number" min="0" step="0.01" placeholder="0">
-          </div>
-          <div class="field">
-            <label for="otherLiabilities">Other deductions</label>
-            <input id="otherLiabilities" name="otherLiabilities" type="number" min="0" step="0.01" placeholder="0">
-          </div>
+          <div class="field"><label for="cash">Cash</label><input id="cash" name="cash" type="number" min="0" step="0.01" placeholder="0"></div>
+          <div class="field"><label for="gold">Gold value</label><input id="gold" name="gold" type="number" min="0" step="0.01" placeholder="0"></div>
+          <div class="field"><label for="silver">Silver value</label><input id="silver" name="silver" type="number" min="0" step="0.01" placeholder="0"></div>
+          <div class="field"><label for="savings">Savings</label><input id="savings" name="savings" type="number" min="0" step="0.01" placeholder="0"></div>
+          <div class="field"><label for="investments">Investments</label><input id="investments" name="investments" type="number" min="0" step="0.01" placeholder="0"></div>
+          <div class="field"><label for="business">Business assets</label><input id="business" name="business" type="number" min="0" step="0.01" placeholder="0"></div>
+          <div class="field"><label for="receivables">Receivables</label><input id="receivables" name="receivables" type="number" min="0" step="0.01" placeholder="0"></div>
+          <div class="field"><label for="otherAssets">Other eligible assets</label><input id="otherAssets" name="otherAssets" type="number" min="0" step="0.01" placeholder="0"></div>
+          <div class="field"><label for="debts">Short-term debts</label><input id="debts" name="debts" type="number" min="0" step="0.01" placeholder="0"></div>
+          <div class="field"><label for="expenses">Immediate expenses</label><input id="expenses" name="expenses" type="number" min="0" step="0.01" placeholder="0"></div>
+          <div class="field"><label for="payables">Other payables</label><input id="payables" name="payables" type="number" min="0" step="0.01" placeholder="0"></div>
+          <div class="field"><label for="otherLiabilities">Other deductions</label><input id="otherLiabilities" name="otherLiabilities" type="number" min="0" step="0.01" placeholder="0"></div>
         </div>
 
         <div class="actions">
@@ -572,22 +546,10 @@
           <p class="muted" id="nisabMeta">Loading Nisab data...</p>
         </div>
 
-        <div class="stat">
-          <div class="stat-label">Total Assets</div>
-          <div class="stat-value" id="totalAssets">0 BDT</div>
-        </div>
-        <div class="stat">
-          <div class="stat-label">Total Liabilities</div>
-          <div class="stat-value" id="totalLiabilities">0 BDT</div>
-        </div>
-        <div class="stat">
-          <div class="stat-label">Net Wealth</div>
-          <div class="stat-value" id="netWealth">0 BDT</div>
-        </div>
-        <div class="stat">
-          <div class="stat-label">Selected Nisab Threshold</div>
-          <div class="stat-value" id="nisabValue">0 BDT</div>
-        </div>
+        <div class="stat"><div class="stat-label">Total Assets</div><div class="stat-value" id="totalAssets">0 BDT</div></div>
+        <div class="stat"><div class="stat-label">Total Liabilities</div><div class="stat-value" id="totalLiabilities">0 BDT</div></div>
+        <div class="stat"><div class="stat-label">Net Wealth</div><div class="stat-value" id="netWealth">0 BDT</div></div>
+        <div class="stat"><div class="stat-label">Selected Nisab Threshold</div><div class="stat-value" id="nisabValue">0 BDT</div></div>
 
         <div class="hero-result low" id="heroResult">
           <div id="heroTitle">No calculation yet</div>
@@ -601,59 +563,163 @@
       <h2>Smart Guidance</h2>
       <p class="muted">The API analyzes your numbers and returns helpful guidance, not only the final Zakat amount.</p>
       <div class="insights-list" id="insightsList">
-        <div class="insight">
-          <strong>Ready to help</strong>
-          Enter your assets and liabilities, then calculate to see personalized guidance about Nisab, deductions, and Zakat due.
-        </div>
+        <div class="insight"><strong>Ready to help</strong>Enter your assets and liabilities, then calculate to see personalized guidance about Nisab, deductions, and Zakat due.</div>
       </div>
     </section>
 
-    <section class="docs">
-      <h2>API</h2>
-      <p class="muted">Simple, modern, clickable API documentation.</p>
+    <section class="docs" id="api-documentation">
+      <h2>API Documentation</h2>
+      <p class="muted">Detailed, copy-friendly documentation for websites, mobile apps, student projects, and backend services with 157 supported currencies.</p>
       <div class="docs-toggle">
         <button type="button" id="docsToggleButton">Click for API documentation</button>
       </div>
       <div class="docs-body" id="docsBody">
         <div class="doc-grid">
-          <a class="api-link" href="https://zakat-calculator-coral-one.vercel.app/api/nisab?currency=USD" target="_blank" rel="noreferrer">
-            <div class="api-link-head">
-              <span class="method get">GET</span>
-              <span class="api-link-title">Get Nisab values</span>
+          <div class="doc-card" style="grid-column: 1 / -1;">
+            <h3>API Overview</h3>
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>HTTP Method</th>
+                  <th>URL</th>
+                  <th>Description</th>
+                  <th>Parameters</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="method get">GET</span></td>
+                  <td><code>/api/nisab?currency=USD</code></td>
+                  <td>Returns current Nisab values for gold and silver in the selected currency.</td>
+                  <td><code>currency</code></td>
+                </tr>
+                <tr>
+                  <td><span class="method">POST</span></td>
+                  <td><code>/api/calculate</code></td>
+                  <td>Calculates Zakat using assets, liabilities, currency, and Nisab basis.</td>
+                  <td><code>assets</code>, <code>liabilities</code>, <code>currency</code>, <code>nisab_basis</code></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="doc-card">
+            <div class="doc-head">
+              <div><span class="method get">GET</span><span class="doc-title"> Nisab endpoint</span></div>
+              <button type="button" class="copy-btn" data-copy-target="nisabEndpoint">Copy</button>
             </div>
-            <p>Open live Nisab data in your browser with the selected currency.</p>
-            <span class="api-link-url">https://zakat-calculator-coral-one.vercel.app/api/nisab?currency=USD</span>
-          </a>
-          <a class="api-link" href="https://zakat-calculator-coral-one.vercel.app/" target="_blank" rel="noreferrer">
-            <div class="api-link-head">
-              <span class="method">POST</span>
-              <span class="api-link-title">Calculate Zakat</span>
+            <p>Use this endpoint to fetch current Nisab values for gold and silver in the currency you choose.</p>
+            <div class="code-block" id="nisabEndpoint">GET https://zakat-calculator-coral-one.vercel.app/api/nisab?currency=USD</div>
+          </div>
+          <div class="doc-card">
+            <div class="doc-head">
+              <div><span class="method">POST</span><span class="doc-title"> Calculation endpoint</span></div>
+              <button type="button" class="copy-btn" data-copy-target="calculateEndpoint">Copy</button>
             </div>
-            <p>Send assets and liabilities to calculate Zakat and receive smart guidance.</p>
-            <span class="api-link-url">https://zakat-calculator-coral-one.vercel.app/api/calculate</span>
-          </a>
+            <p>Send assets, liabilities, currency, and Nisab basis to calculate Zakat and receive a clear response.</p>
+            <div class="code-block" id="calculateEndpoint">POST https://zakat-calculator-coral-one.vercel.app/api/calculate
+Content-Type: application/json</div>
+          </div>
         </div>
+
+        <div class="doc-grid">
+          <div class="doc-card">
+            <h3>What To Send</h3>
+            <ul class="doc-list">
+              <li>Use `currency` such as `BDT`, `USD`, `EUR`, or any supported currency.</li>
+              <li>Use `nisab_basis` as `gold` or `silver`.</li>
+              <li>Put eligible wealth items inside `assets`.</li>
+              <li>Put deductible obligations inside `liabilities`.</li>
+            </ul>
+          </div>
+          <div class="doc-card">
+            <h3>What You Receive</h3>
+            <ul class="doc-list">
+              <li>Total assets, total liabilities, and net wealth</li>
+              <li>Selected Nisab threshold</li>
+              <li>Whether Zakat is applicable</li>
+              <li>Zakat amount and smart insights</li>
+              <li>Support for 157 currencies from the Nisab API</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="doc-grid single">
+          <div class="doc-card">
+            <div class="doc-head">
+              <h3>Example POST Request Body</h3>
+              <button type="button" class="copy-btn" data-copy-target="requestExample">Copy</button>
+            </div>
+            <div class="code-block" id="requestExample">{
+  "assets": {
+    "cash": 500000,
+    "gold": 125000,
+    "savings": 220000
+  },
+  "liabilities": {
+    "debts": 70000,
+    "expenses": 25000
+  },
+  "currency": "BDT",
+  "nisab_basis": "gold"
+}</div>
+          </div>
+          <div class="doc-card">
+            <div class="doc-head">
+              <h3>Example Response</h3>
+              <button type="button" class="copy-btn" data-copy-target="responseExample">Copy</button>
+            </div>
+            <div class="code-block" id="responseExample">{
+  "success": true,
+  "currency": "BDT",
+  "nisab_basis": "gold",
+  "calculation": {
+    "total_assets": 845000,
+    "total_liabilities": 95000,
+    "net_wealth": 750000,
+    "nisab_threshold": 743580,
+    "is_zakat_applicable": true,
+    "zakat_amount": 18750,
+    "zakat_percentage": 2.5
+  },
+  "insights": [
+    {
+      "type": "success",
+      "title": "Zakat is due",
+      "message": "Your payable Zakat is 18,750 BDT at 2.5% of net eligible wealth."
+    }
+  ]
+}</div>
+          </div>
+        </div>
+
+        <div class="doc-grid single">
+          <div class="doc-card">
+            <h3>Important Request Fields</h3>
+            <div class="field-table">
+              <div class="field-row"><div class="field-name">assets.cash</div><div class="field-desc">Cash in hand, bank balance, or any money immediately available.</div></div>
+              <div class="field-row"><div class="field-name">assets.gold</div><div class="field-desc">Current market value of the gold you own.</div></div>
+              <div class="field-row"><div class="field-name">assets.silver</div><div class="field-desc">Current market value of the silver you own.</div></div>
+              <div class="field-row"><div class="field-name">assets.savings</div><div class="field-desc">Savings, deposits, or money reserved for later use.</div></div>
+              <div class="field-row"><div class="field-name">liabilities.debts</div><div class="field-desc">Short-term debts or obligations that can be deducted.</div></div>
+              <div class="field-row"><div class="field-name">currency</div><div class="field-desc">Any supported currency returned by the API.</div></div>
+              <div class="field-row"><div class="field-name">nisab_basis</div><div class="field-desc">Choose `gold` or `silver` depending on the Nisab threshold you want to apply.</div></div>
+            </div>
+          </div>
+        </div>
+
         <div class="doc-steps">
-          <div class="doc-step">
-            <div class="doc-step-number">1</div>
-            <div>
-              <strong>Check Nisab first</strong>
-              <p>Click the GET endpoint to view the current Nisab threshold in your preferred currency.</p>
+          <div class="doc-step"><div class="doc-step-number">1</div><div><strong>Check Nisab first</strong><p>Call the GET endpoint to see the current gold and silver Nisab values in the currency you need.</p></div></div>
+          <div class="doc-step"><div class="doc-step-number">2</div><div><strong>Send the calculation request</strong><p>POST a JSON body with assets, liabilities, currency, and Nisab basis.</p></div></div>
+          <div class="doc-step"><div class="doc-step-number">3</div><div><strong>Use the response in your app</strong><p>Display total assets, net wealth, Nisab threshold, Zakat amount, and smart guidance to the user.</p></div></div>
+        </div>
+
+        <div class="doc-grid single">
+          <div class="doc-card">
+            <div class="doc-head">
+              <h3>Supported Currencies</h3>
+              <button type="button" class="copy-btn" data-copy-target="currenciesList">Copy</button>
             </div>
-          </div>
-          <div class="doc-step">
-            <div class="doc-step-number">2</div>
-            <div>
-              <strong>Send your calculation request</strong>
-              <p>Use the POST endpoint from your website, app, or backend with assets, liabilities, currency, and Nisab basis.</p>
-            </div>
-          </div>
-          <div class="doc-step">
-            <div class="doc-step-number">3</div>
-            <div>
-              <strong>Show the result to users</strong>
-              <p>Read the JSON response and display total assets, net wealth, Nisab threshold, Zakat due, and helpful guidance.</p>
-            </div>
+            <div class="code-block" id="currenciesList">Loading supported currencies...</div>
           </div>
         </div>
       </div>
@@ -661,10 +727,7 @@
 
     <footer class="footer">
       <div class="bismillah">بسم الله الرحمن الرحيم</div>
-      <p>
-        Made with ❤️ by
-        <a href="https://github.com/eiaserbd" target="_blank" rel="noreferrer">Eiaser Hosen</a>
-      </p>
+      <p>Made with ❤️ by <a href="https://github.com/eiaserbd" target="_blank" rel="noreferrer">Eiaser Hosen</a></p>
       <p>Building digital tools for the Ummah 🤲</p>
       <p class="dua-line">🤲 رَبَّنَا تَقَبَّلْ مِنَّا إِنَّكَ أَنْتَ السَّمِيعُ الْعَلِيمُ</p>
       <p class="dua-line">🤲 رَبِّ زِدْنِي عِلْمًا</p>
@@ -680,15 +743,15 @@
     const statusText = document.getElementById('statusText');
     const docsBody = document.getElementById('docsBody');
     const docsToggleButton = document.getElementById('docsToggleButton');
+    const currenciesList = document.getElementById('currenciesList');
     const inputs = Array.from(document.querySelectorAll('input[type="number"]'));
-    let supportedCurrencies = [];
 
     function populateCurrencies(currencies, selectedCurrency) {
-      supportedCurrencies = currencies.slice();
       currencySelect.innerHTML = currencies.map((currency) => {
         const selected = currency === selectedCurrency ? ' selected' : '';
         return `<option value="${currency}"${selected}>${currency}</option>`;
       }).join('');
+      currenciesList.textContent = currencies.join(', ');
     }
 
     function formatMoney(amount, currency) {
@@ -696,6 +759,17 @@
         maximumFractionDigits: 2,
         minimumFractionDigits: 0
       }).format(amount) + ' ' + currency;
+    }
+
+    async function copyText(value, button) {
+      try {
+        await navigator.clipboard.writeText(value);
+        const original = button.textContent;
+        button.textContent = 'Copied';
+        setTimeout(() => { button.textContent = original; }, 1200);
+      } catch (error) {
+        statusText.textContent = 'Unable to copy text on this device.';
+      }
     }
 
     function buildPayload() {
@@ -810,13 +884,9 @@
 
     resetButton.addEventListener('click', () => {
       form.reset();
-      inputs.forEach((input) => {
-        input.value = '';
-      });
+      inputs.forEach((input) => { input.value = ''; });
       statusText.textContent = 'Form reset.';
-      refreshNisab().catch((error) => {
-        statusText.textContent = error.message;
-      });
+      refreshNisab().catch((error) => { statusText.textContent = error.message; });
       updateInsights([]);
       document.getElementById('totalAssets').textContent = `0 ${currencySelect.value}`;
       document.getElementById('totalLiabilities').textContent = `0 ${currencySelect.value}`;
@@ -828,9 +898,11 @@
     });
 
     currencySelect.addEventListener('change', () => {
-      refreshNisab().catch((error) => {
-        statusText.textContent = error.message;
-      });
+      refreshNisab().catch((error) => { statusText.textContent = error.message; });
+    });
+
+    nisabBasisSelect.addEventListener('change', () => {
+      refreshNisab().catch((error) => { statusText.textContent = error.message; });
     });
 
     docsToggleButton.addEventListener('click', () => {
@@ -840,15 +912,18 @@
         : 'Click for API documentation';
     });
 
-    nisabBasisSelect.addEventListener('change', () => {
-      refreshNisab().catch((error) => {
-        statusText.textContent = error.message;
+    document.querySelectorAll('[data-copy-target]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const target = document.getElementById(button.getAttribute('data-copy-target'));
+        if (target) {
+          copyText(target.textContent, button);
+        }
       });
     });
 
-    refreshNisab().catch((error) => {
-      statusText.textContent = error.message;
-    });
+    refreshNisab().catch((error) => { statusText.textContent = error.message; });
   </script>
 </body>
 </html>
+
+

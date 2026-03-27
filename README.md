@@ -11,7 +11,7 @@ Live site:
 - Supports `gold` and `silver` Nisab basis
 - Returns helpful guidance in addition to the final amount
 - Currency-aware Nisab response
-- 50 supported currencies
+- 157 supported currencies
 - Beginner-friendly UI and API documentation
 
 ## Endpoints
@@ -45,7 +45,7 @@ Example response:
     "zakat_rate": 0.025
   },
   "recommended_basis": "gold",
-  "supported_currencies": ["BDT", "USD", "EUR"]
+  "supported_currencies": ["BDT", "USD", "EUR", "GBP", "CAD"]
 }
 ```
 
@@ -104,7 +104,13 @@ Example response:
 
 ## Supported currencies
 
+The API now supports 157 currencies.
+
 `BDT`, `USD`, `EUR`, `GBP`, `CAD`, `AUD`, `INR`, `PKR`, `SAR`, `AED`, `MYR`, `SGD`, `QAR`, `KWD`, `OMR`, `BHD`, `JPY`, `CNY`, `HKD`, `THB`, `IDR`, `TRY`, `ZAR`, `EGP`, `NGN`, `NOK`, `SEK`, `DKK`, `CHF`, `NZD`, `BRL`, `MXN`, `RUB`, `KRW`, `LKR`, `NPR`, `BND`, `JOD`, `MAD`, `TND`, `ILS`, `CZK`, `PLN`, `HUF`, `RON`, `UAH`, `VND`, `PHP`, `KES`, `UZS`
+
+Additional supported currencies include:
+
+`AFN`, `ALL`, `AMD`, `AOA`, `ARS`, `AWG`, `AZN`, `BAM`, `BBD`, `BGN`, `BIF`, `BMD`, `BOB`, `BSD`, `BTN`, `BWP`, `BYN`, `BZD`, `CDF`, `CLP`, `COP`, `CRC`, `CUP`, `CUC`, `CVE`, `DJF`, `DOP`, `DZD`, `ERN`, `ETB`, `FJD`, `FKP`, `GEL`, `GGP`, `GHS`, `GIP`, `GMD`, `GNF`, `GTQ`, `GYD`, `HNL`, `HTG`, `IQD`, `IRR`, `ISK`, `JEP`, `JMD`, `KGS`, `KHR`, `KMF`, `KYD`, `KZT`, `LAK`, `LBP`, `LRD`, `LSL`, `LYD`, `MDL`, `MGA`, `MKD`, `MMK`, `MNT`, `MOP`, `MRO`, `MRU`, `MUR`, `MVR`, `MWK`, `MZN`, `NAD`, `NIO`, `PAB`, `PGK`, `PYG`, `RSD`, `RWF`, `SBD`, `SCR`, `SDG`, `SLE`, `SLL`, `SOS`, `SRD`, `SSP`, `STN`, `SVC`, `SYP`, `SZL`, `TJS`, `TMT`, `TOP`, `TTD`, `TWD`, `TZS`, `UGX`, `UYU`, `VES`, `VUV`, `WST`, `XAF`, `XCD`, `XOF`, `XPF`, `YER`, `ZMW`, `ZWL`, `ANG`
 
 ## Project structure
 

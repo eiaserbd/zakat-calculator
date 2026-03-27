@@ -1,6 +1,8 @@
 {
   "name": "zakat-calculator-api",
-  "version": "1.0.0",
-  "description": "Islamic Zakat Calculator API",
-  "main": "api/calculate.js"
+  "version": "2.0.0",
+  "description": "Smart Islamic Zakat Calculator with Beautiful UI",
+  "main": "api/calculate.js",
+  "author": "Eiaser Hosen",
+  "license": "MIT"
 }

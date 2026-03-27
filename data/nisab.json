@@ -3,12 +3,16 @@
     "price_per_gram": 8500,
     "nisab_grams": 87.48,
     "nisab_value": 743580,
-    "last_updated": "2024-01-15"
+    "last_updated": "2024-01-15",
+    "description": "Gold nisab based on 87.48 grams at 8,500 BDT/gram"
   },
   "silver": {
     "price_per_gram": 110,
     "nisab_grams": 612.36,
-    "nisab_value": 67359.6,
-    "last_updated": "2024-01-15"
-  }
+    "nisab_value": 67360,
+    "last_updated": "2024-01-15",
+    "description": "Silver nisab based on 612.36 grams at 110 BDT/gram"
+  },
+  "zakat_rate": 0.025,
+  "currency": "BDT"
 }

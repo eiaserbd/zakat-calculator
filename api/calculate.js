@@ -1,107 +1,115 @@
-// api/calculate.js
-const nisabData = require('../data/nisab.json');
+const { calculateZakat, ASSET_FIELDS, LIABILITY_FIELDS, DEFAULT_CURRENCY, CURRENCY_RATES } = require('../lib/zakat');
+
+function setHeaders(res) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Content-Type', 'application/json; charset=utf-8');
+  res.setHeader('Cache-Control', 'no-store');
+}
+
+function parseBody(req) {
+  if (!req.body) {
+    return {};
+  }
+
+  if (typeof req.body === 'string') {
+    return JSON.parse(req.body);
+  }
+
+  return req.body;
+}
 
 module.exports = (req, res) => {
-  // Enable CORS
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Content-Type', 'application/json');
-  
-  // Handle OPTIONS for CORS preflight
+  setHeaders(res);
+
   if (req.method === 'OPTIONS') {
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
     return res.status(200).end();
   }
-  
-  // GET request - return calculator info
+
   if (req.method === 'GET') {
     return res.status(200).json({
       success: true,
-      message: 'Zakat Calculator API',
+      name: 'Smart Zakat Calculator API',
+      version: '2.1.0',
       endpoints: {
         calculate: 'POST /api/calculate',
         nisab: 'GET /api/nisab',
-        help: 'GET /api/help'
       },
-      example: {
-        method: 'POST',
-        body: {
-          assets: { cash: 500000, gold: 100000, silver: 50000, savings: 200000 },
-          liabilities: { debts: 100000, expenses: 50000 }
-        }
-      }
+      accepted_fields: {
+        assets: ASSET_FIELDS,
+        liabilities: LIABILITY_FIELDS,
+      },
+      defaults: {
+        currency: DEFAULT_CURRENCY,
+        nisab_basis: 'gold',
+      },
+      supported_currencies: Object.keys(CURRENCY_RATES),
+      example_request: {
+        assets: {
+          cash: 500000,
+          gold: 125000,
+          savings: 200000,
+        },
+        liabilities: {
+          debts: 80000,
+          expenses: 25000,
+        },
+        currency: 'BDT',
+        nisab_basis: 'gold',
+      },
     });
   }
-  
-  // POST request - calculate zakat
-  if (req.method === 'POST') {
-    try {
-      const { assets, liabilities, currency = 'BDT' } = req.body;
-      
-      if (!assets) {
-        return res.status(400).json({
-          success: false,
-          error: 'Assets data is required'
-        });
-      }
-      
-      // Calculate total assets
-      const totalAssets = 
-        (assets.cash || 0) +
-        (assets.gold || 0) +
-        (assets.silver || 0) +
-        (assets.savings || 0) +
-        (assets.investments || 0) +
-        (assets.business || 0);
-      
-      // Calculate total liabilities
-      const totalLiabilities = 
-        (assets.debts || 0) +
-        (assets.expenses || 0);
-      
-      // Net wealth
-      const netWealth = totalAssets - totalLiabilities;
-      
-      // Nisab threshold (using gold nisab)
-      const nisab = nisabData.gold.nisab_value;
-      
-      // Check if zakat is applicable
-      const isZakatApplicable = netWealth >= nisab;
-      
-      // Zakat amount (2.5% of net wealth)
-      const zakatAmount = isZakatApplicable ? netWealth * 0.025 : 0;
-      
-      // Response
-      return res.status(200).json({
-        success: true,
-        calculation: {
-          total_assets: totalAssets,
-          total_liabilities: totalLiabilities,
-          net_wealth: netWealth,
-          nisab_threshold: nisab,
-          is_zakat_applicable: isZakatApplicable,
-          zakat_amount: zakatAmount,
-          zakat_percentage: 2.5,
-          currency: currency
-        },
-        breakdown: {
-          assets: assets,
-          liabilities: { debts: assets.debts || 0, expenses: assets.expenses || 0 }
-        },
-        timestamp: new Date().toISOString()
-      });
-      
-    } catch (error) {
-      return res.status(500).json({
+
+  if (req.method !== 'POST') {
+    return res.status(405).json({
+      success: false,
+      error: 'Method not allowed',
+      allowed_methods: ['GET', 'POST', 'OPTIONS'],
+    });
+  }
+
+  try {
+    const payload = parseBody(req);
+    const result = calculateZakat(payload);
+
+    if (result.invalid_fields.length > 0) {
+      return res.status(400).json({
         success: false,
-        error: error.message
+        error: 'Invalid numeric values detected',
+        invalid_fields: result.invalid_fields,
+        hint: 'All asset and liability values must be valid non-negative numbers.',
       });
     }
+
+    if (result.totals.total_assets <= 0) {
+      return res.status(400).json({
+        success: false,
+        error: 'At least one asset value is required',
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      currency: result.currency,
+      nisab_basis: result.nisab_basis,
+      calculation: {
+        ...result.totals,
+        ...result.calculation,
+      },
+      nisab: result.nisab,
+      breakdown: {
+        assets: result.assets,
+        liabilities: result.liabilities,
+      },
+      insights: result.insights,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      error: 'Internal server error',
+      message: error.message,
+    });
   }
-  
-  // Method not allowed
-  return res.status(405).json({
-    success: false,
-    error: 'Method not allowed. Use GET or POST'
-  });
 };

@@ -1,984 +1,619 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zakat Calculator | Islamic Financial Tool</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
-            min-height: 100vh;
-            padding: 20px;
-            position: relative;
-            overflow-x: hidden;
-        }
-        
-        body::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="%23ffffff" opacity="0.03"/><circle cx="75" cy="75" r="1" fill="%23ffffff" opacity="0.03"/><circle cx="50" cy="10" r="0.5" fill="%23ffffff" opacity="0.02"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
-            pointer-events: none;
-        }
-        
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .header {
-            text-align: center;
-            color: #ffffff;
-            margin-bottom: 40px;
-            animation: slideDown 1s ease-out;
-            border: 1px solid rgba(255, 215, 0, 0.5);
-            padding: 15px;
-            border-radius: 20px;
-            background: rgba(0, 0, 0, 0.20);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-        }
-        
-        .header h1 {
-            font-size: 3rem;
-            margin-bottom: 15px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-            background: linear-gradient(45deg, #ffd700, #ffed4e);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .header p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        
-        .calculator-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            border-radius: 25px;
-            padding: 40px;
-            box-shadow: 0 25px 80px rgba(0,0,0,0.15);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            animation: fadeInUp 1s ease-out 0.3s both;
-        }
-        
-        .section {
-            margin-bottom: 30px;
-            background: rgba(255, 255, 255, 0.7);
-            border-radius: 15px;
-            padding: 25px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-        
-        .section-title {
-            font-size: 1.4rem;
-            font-weight: bold;
-            color: #204020;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 3px solid #1f7a1f;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .section-title::before {
-            content: '🕌';
-            display: inline-block;
-            margin-right: 6px;
-            font-size: 1.2rem;
-        }
-        
-        .input-group {
-            margin-bottom: 20px;
-        }
-        
-        .input-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: #4a5568;
-            font-weight: 600;
-            font-size: 0.95rem;
-        }
-        
-        .input-group input {
-            width: 100%;
-            padding: 15px 20px;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            background: rgba(255, 255, 255, 0.9);
-        }
-        
-        .input-group input:focus {
-            outline: none;
-            border-color: #ffd700;
-            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
-            transform: translateY(-2px);
-        }
-        
-        .calculate-btn {
-            width: 100%;
-            padding: 18px;
-            background: linear-gradient(135deg, #ffd700 0%, #ffb347 100%);
-            color: #2d3748;
-            border: none;
-            border-radius: 15px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
-            margin-top: 10px;
-        }
-        
-        .calculate-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
-        }
-        
-        .calculate-btn:active {
-            transform: translateY(-1px);
-        }
-        
-        .result {
-            margin-top: 35px;
-            padding: 30px;
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            border-radius: 20px;
-            display: none;
-            border: 1px solid rgba(0,0,0,0.1);
-            animation: slideIn 0.6s ease-out;
-        }
-        
-        .result.show {
-            display: block;
-        }
-        
-        .result-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 0;
-            border-bottom: 1px solid rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
-        }
-        
-        .result-item:hover {
-            background: rgba(255, 215, 0, 0.05);
-            border-radius: 8px;
-            padding-left: 10px;
-            padding-right: 10px;
-            margin: 0 -10px;
-        }
-        
-        .result-item:last-child {
-            border-bottom: none;
-        }
-        
-        .result-label {
-            font-weight: 600;
-            color: #495057;
-            font-size: 1rem;
-        }
-        
-        .result-value {
-            font-weight: bold;
-            color: #212529;
-            font-size: 1.1rem;
-        }
-        
-        .zakat-amount {
-            font-size: 1.8rem;
-            color: #28a745;
-            margin-top: 20px;
-            text-align: center;
-            padding: 20px;
-            background: rgba(40, 167, 69, 0.1);
-            border-radius: 15px;
-            border: 2px solid rgba(40, 167, 69, 0.2);
-            animation: pulse 2s infinite;
-        }
-        
-        .footer {
-            text-align: center;
-            margin-top: 40px;
-            color: white;
-            font-size: 0.95rem;
-            opacity: 0.8;
-            line-height: 1.6;
-        }
-        
-        .bismillah {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #ffd700;
-            margin-bottom: 15px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-            font-family: 'Arial', sans-serif;
-        }
-        
-        .developed-by {
-            font-weight: 500;
-            color: #e2e8f0;
-            margin: 15px 0;
-        }
-        
-        .github-link {
-            color: #ffd700;
-            text-decoration: none;
-            font-weight: bold;
-            transition: all 0.3s ease;
-        }
-        
-        .github-link:hover {
-            color: #ffed4e;
-            text-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
-        }
-        
-        .dua {
-            font-style: italic;
-            color: #a0aec0;
-            margin-top: 10px;
-            font-size: 0.9rem;
-        }
-        
-        .api-info {
-            background: linear-gradient(135deg, #123324 0%, #245536 100%);
-            padding: 25px;
-            border-radius: 15px;
-            margin-top: 25px;
-            font-family: 'Courier New', monospace;
-            font-size: 13px;
-            color: #d0f4de;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            position: relative;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
-        }
-        
-        .api-header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        
-        .api-header h3 {
-            color: #ffd700;
-            margin-bottom: 5px;
-            font-size: 1.2rem;
-        }
-        
-        .api-description {
-            color: #a0aec0;
-            font-size: 0.9rem;
-            font-family: 'Segoe UI', sans-serif;
-        }
-        
-        .api-tabs {
-            display: flex;
-            gap: 5px;
-            margin-bottom: 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .tab-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            color: #adb5bd;
-            padding: 8px 16px;
-            border-radius: 8px 8px 0 0;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 0.9rem;
-            font-family: 'Segoe UI', sans-serif;
-        }
-        
-        .tab-btn.active {
-            background: #ffd700;
-            color: #2d3748;
-            font-weight: bold;
-        }
-        
-        .tab-btn:hover {
-            background: rgba(255, 215, 0, 0.2);
-            color: #ffd700;
-        }
-        
-        .tab-content {
-            display: none;
-        }
-        
-        .tab-content.active {
-            display: block;
-        }
-        
-        .api-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 15px;
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .api-item:last-child {
-            margin-bottom: 0;
-        }
-        
-        .api-content {
-            flex: 1;
-            margin-right: 15px;
-        }
-        
-        .api-note {
-            color: #a0aec0;
-            font-size: 0.8rem;
-            margin-top: 5px;
-        }
-        
-        .copy-btn {
-            background: linear-gradient(135deg, #ffd700 0%, #ffb347 100%);
-            color: #2d3748;
-            border: none;
-            border-radius: 8px;
-            padding: 8px 12px;
-            font-size: 12px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
-            white-space: nowrap;
-        }
-        
-        .copy-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
-        }
-        
-        .copy-btn:active {
-            transform: translateY(0);
-        }
-        
-        .copy-btn.copied {
-            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-            color: white;
-        }
-        
-        .example-scenarios {
-            max-height: 400px;
-            overflow-y: auto;
-        }
-        
-        .scenario {
-            margin-bottom: 20px;
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        
-        .scenario h5 {
-            color: #ffd700;
-            margin-bottom: 10px;
-            font-family: 'Segoe UI', sans-serif;
-        }
-        
-        .schema-section h4 {
-            color: #ffd700;
-            margin-bottom: 10px;
-            font-family: 'Segoe UI', sans-serif;
-        }
-        
-        .json-schema {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            overflow-x: auto;
-        }
-        
-        .json-schema pre {
-            margin: 0;
-            white-space: pre-wrap;
-            word-break: break-all;
-        }
-        
-        .json-schema .type {
-            color: #74b9ff;
-            font-style: italic;
-        }
-        
-        .api-tester h4 {
-            color: #ffd700;
-            margin-bottom: 15px;
-            font-family: 'Segoe UI', sans-serif;
-        }
-        
-        .test-form {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        
-        .test-input-group {
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .test-input-group label {
-            color: #adb5bd;
-            font-size: 0.9rem;
-            margin-bottom: 5px;
-            font-family: 'Segoe UI', sans-serif;
-        }
-        
-        .test-input-group input {
-            padding: 8px 12px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 6px;
-            background: rgba(255, 255, 255, 0.1);
-            color: #adb5bd;
-            font-size: 0.9rem;
-        }
-        
-        .test-input-group input:focus {
-            outline: none;
-            border-color: #ffd700;
-            box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.2);
-        }
-        
-        .test-btn {
-            grid-column: span 2;
-            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 12px;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-family: 'Segoe UI', sans-serif;
-        }
-        
-        .test-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
-        }
-        
-        .test-result {
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            display: none;
-            font-family: 'Segoe UI', sans-serif;
-        }
-        
-        .test-result.success {
-            background: rgba(40, 167, 69, 0.1);
-            border-color: rgba(40, 167, 69, 0.3);
-        }
-        
-        .test-result.error {
-            background: rgba(220, 53, 69, 0.1);
-            border-color: rgba(220, 53, 69, 0.3);
-        }
-        
-        .toast {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-            color: white;
-            padding: 15px 25px;
-            border-radius: 12px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-            font-weight: 500;
-            font-size: 14px;
-            z-index: 1000;
-            transform: translateX(400px);
-            transition: transform 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .toast.show {
-            transform: translateX(0);
-        }
-        
-        .toast-icon {
-            font-size: 18px;
-        }
-        
-        @keyframes slideDown {
-            from { transform: translateY(-50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        
-        @keyframes fadeInUp {
-            from { transform: translateY(30px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        
-        @keyframes slideIn {
-            from { transform: translateX(-20px); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-        
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(40, 167, 69, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); }
-        }
-        
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 2.5rem;
-            }
-            
-            .calculator-card {
-                padding: 25px;
-            }
-            
-            .section {
-                padding: 20px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Smart Zakat calculator with live Nisab lookup and guided results.">
+  <title>Zakat Calculator</title>
+  <style>
+    :root {
+      --bg: #f3efe4;
+      --bg-accent: #e6dcc5;
+      --card: rgba(255, 250, 242, 0.9);
+      --ink: #1d2b24;
+      --muted: #5f6d64;
+      --line: rgba(29, 43, 36, 0.12);
+      --primary: #0d6b4d;
+      --primary-strong: #084d38;
+      --gold: #c58b1b;
+      --danger: #a13f34;
+      --shadow: 0 18px 40px rgba(42, 52, 45, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(197, 139, 27, 0.14), transparent 30%),
+        radial-gradient(circle at bottom right, rgba(13, 107, 77, 0.12), transparent 28%),
+        linear-gradient(135deg, var(--bg), var(--bg-accent));
+      min-height: 100vh;
+    }
+
+    .page {
+      width: min(1100px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 32px 0 48px;
+    }
+
+    .hero,
+    .panel,
+    .docs {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    .hero {
+      padding: 32px;
+      margin-bottom: 24px;
+    }
+
+    .eyebrow {
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--primary);
+      font-size: 0.78rem;
+      margin-bottom: 10px;
+    }
+
+    h1,
+    h2,
+    h3 {
+      margin: 0;
+      font-weight: 700;
+    }
+
+    h1 {
+      font-size: clamp(2.2rem, 5vw, 3.9rem);
+      line-height: 0.95;
+      max-width: 11ch;
+    }
+
+    .hero p {
+      max-width: 58ch;
+      margin: 16px 0 0;
+      color: var(--muted);
+      font-size: 1.05rem;
+      line-height: 1.7;
+    }
+
+    .quote {
+      margin-top: 22px;
+      padding: 14px 18px;
+      border-left: 4px solid var(--gold);
+      background: rgba(197, 139, 27, 0.08);
+      border-radius: 14px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .panel {
+      padding: 24px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      font-size: 0.95rem;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.78);
+      color: var(--ink);
+      font: inherit;
+    }
+
+    input:focus,
+    select:focus {
+      outline: 2px solid rgba(13, 107, 77, 0.18);
+      border-color: rgba(13, 107, 77, 0.45);
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: 0;
+      border-radius: 999px;
+      padding: 14px 20px;
+      font: inherit;
+      cursor: pointer;
+      transition: transform 0.18s ease, opacity 0.18s ease, background 0.18s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+    }
+
+    .primary {
+      background: linear-gradient(135deg, var(--primary), var(--primary-strong));
+      color: #fff;
+    }
+
+    .secondary {
+      background: rgba(13, 107, 77, 0.08);
+      color: var(--primary);
+    }
+
+    .summary {
+      display: grid;
+      gap: 14px;
+    }
+
+    .stat {
+      padding: 16px 18px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid var(--line);
+    }
+
+    .stat-label {
+      color: var(--muted);
+      font-size: 0.88rem;
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .hero-result {
+      margin-top: 10px;
+      padding: 22px;
+      border-radius: 22px;
+      background: linear-gradient(135deg, rgba(13, 107, 77, 0.95), rgba(8, 77, 56, 0.95));
+      color: #fff;
+    }
+
+    .hero-result.low {
+      background: linear-gradient(135deg, rgba(161, 63, 52, 0.92), rgba(115, 40, 32, 0.92));
+    }
+
+    .hero-result .amount {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      margin-top: 8px;
+    }
+
+    .insights,
+    .docs {
+      margin-top: 24px;
+    }
+
+    .insights-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .insight {
+      padding: 15px 16px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.72);
+    }
+
+    .insight strong {
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .docs {
+      padding: 24px;
+    }
+
+    pre {
+      margin: 14px 0 0;
+      padding: 16px;
+      overflow: auto;
+      border-radius: 18px;
+      background: #18241f;
+      color: #f3efe4;
+      font-size: 0.9rem;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .status {
+      min-height: 24px;
+      margin-top: 14px;
+      color: var(--muted);
+    }
+
+    @media (max-width: 900px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .page {
+        width: min(100% - 20px, 1100px);
+        padding-top: 20px;
+      }
+
+      .hero,
+      .panel,
+      .docs {
+        border-radius: 22px;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .actions {
+        flex-direction: column;
+      }
+
+      button {
+        width: 100%;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🕌 Islamic Zakat Calculator</h1>
-            <p>Calculate your Zakat accurately according to Islamic principles with precision and ease</p>
-        </div>
-        
-        <div class="calculator-card">
-            <div class="section">
-                <div class="section-title">💰 Assets (Wealth)</div>
-                <div class="input-group">
-                    <label>Cash in Hand/Bank (BDT)</label>
-                    <input type="number" id="cash" placeholder="Enter amount" min="0" value="">
-                </div>
-                <div class="input-group">
-                    <label>Gold (value in BDT)</label>
-                    <input type="number" id="gold" placeholder="Enter amount" min="0" value="">
-                </div>
-                <div class="input-group">
-                    <label>Silver (value in BDT)</label>
-                    <input type="number" id="silver" placeholder="Enter amount" min="0" value="">
-                </div>
-                <div class="input-group">
-                    <label>Savings/Investments (BDT)</label>
-                    <input type="number" id="savings" placeholder="Enter amount" min="0" value="">
-                </div>
-                <div class="input-group">
-                    <label>Business Assets (BDT)</label>
-                    <input type="number" id="business" placeholder="Enter amount" min="0" value="">
-                </div>
-            </div>
-            
-            <div class="section">
-                <div class="section-title">📝 Liabilities (Deductions)</div>
-                <div class="input-group">
-                    <label>Outstanding Debts (BDT)</label>
-                    <input type="number" id="debts" placeholder="0" value="0">
-                </div>
-                <div class="input-group">
-                    <label>Monthly Expenses (BDT)</label>
-                    <input type="number" id="expenses" placeholder="0" value="0">
-                </div>
-            </div>
-            
-            <button class="calculate-btn" onclick="calculateZakat()">
-                Calculate Zakat
-            </button>
-            
-            <div id="result" class="result">
-                <div class="result-item">
-                    <span class="result-label">Total Assets:</span>
-                    <span class="result-value" id="totalAssets">0 BDT</span>
-                </div>
-                <div class="result-item">
-                    <span class="result-label">Total Liabilities:</span>
-                    <span class="result-value" id="totalLiabilities">0 BDT</span>
-                </div>
-                <div class="result-item">
-                    <span class="result-label">Net Wealth:</span>
-                    <span class="result-value" id="netWealth">0 BDT</span>
-                </div>
-                <div class="result-item">
-                    <span class="result-label">Nisab Threshold:</span>
-                    <span class="result-value" id="nisab">0 BDT</span>
-                </div>
-                <div class="result-item">
-                    <span class="result-label">Zakat Applicable:</span>
-                    <span class="result-value" id="zakatApplicable">-</span>
-                </div>
-                <div class="zakat-amount" id="zakatAmount"></div>
-            </div>
-            
-            <div class="api-info">
-                <div class="api-header">
-                    <h3>🔌 API Documentation</h3>
-                    <p class="api-description">এই API ব্যবহার করে আপনার জাকাত হিসাব স্বয়ংক্রিয়ভাবে গণনা করুন</p>
-                </div>
-                
-                <div class="api-tabs">
-                    <button class="tab-btn active" onclick="switchTab('endpoint')">Endpoint</button>
-                    <button class="tab-btn" onclick="switchTab('examples')">উদাহরণ</button>
-                    <button class="tab-btn" onclick="switchTab('schema')">Schema</button>
-                    <button class="tab-btn" onclick="switchTab('test')">টেস্ট</button>
-                </div>
-                
-                <div id="endpoint-tab" class="tab-content active">
-                    <div class="api-item">
-                        <div class="api-content">
-                            <strong>📡 API Endpoint:</strong><br>
-                            <code id="api-url">POST /api/calculate</code><br>
-                            <small class="api-note">Full URL: <span id="full-api-url"></span></small>
-                        </div>
-                        <button class="copy-btn" onclick="copyToClipboard(getFullApiUrl(), this)">
-                            📋 Copy URL
-                        </button>
-                    </div>
-                    
-                    <div class="api-item">
-                        <div class="api-content">
-                            <strong>📝 Request Format:</strong><br>
-                            <code>Content-Type: application/json</code>
-                        </div>
-                        <button class="copy-btn" onclick="copyToClipboard('Content-Type: application/json', this)">
-                            📋 Copy
-                        </button>
-                    </div>
-                </div>
-                
-                <div id="examples-tab" class="tab-content">
-                    <div class="example-scenarios">
-                        <h4>📊 বিভিন্ন পরিস্থিতির উদাহরণ:</h4>
-                        
-                        <div class="scenario">
-                            <h5>সাধারণ হিসাব:</h5>
-                            <div class="api-item">
-                                <div class="api-content">
-                                    <code>curl -X POST <span id="example-url-1"></span> \<br>&nbsp;&nbsp;-H "Content-Type: application/json" \<br>&nbsp;&nbsp;-d '{"assets":{"cash":500000,"gold":100000,"silver":50000,"savings":200000,"business":300000},"liabilities":{"debts":50000,"expenses":10000},"currency":"BDT"}'</code>
-                                </div>
-                                <button class="copy-btn" onclick="copyToClipboard(getExampleCurl(1), this)">
-                                    📋 Copy
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <div class="scenario">
-                            <h5>শুধুমাত্র নগদ অর্থ:</h5>
-                            <div class="api-item">
-                                <div class="api-content">
-                                    <code>curl -X POST <span id="example-url-2"></span> \<br>&nbsp;&nbsp;-H "Content-Type: application/json" \<br>&nbsp;&nbsp;-d '{"assets":{"cash":1000000},"liabilities":{},"currency":"BDT"}'</code>
-                                </div>
-                                <button class="copy-btn" onclick="copyToClipboard(getExampleCurl(2), this)">
-                                    📋 Copy
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <div class="scenario">
-                            <h5>স্বর্ণ ও রৌপ্য সহ:</h5>
-                            <div class="api-item">
-                                <div class="api-content">
-                                    <code>curl -X POST <span id="example-url-3"></span> \<br>&nbsp;&nbsp;-H "Content-Type: application/json" \<br>&nbsp;&nbsp;-d '{"assets":{"gold":200000,"silver":100000},"liabilities":{"debts":25000},"currency":"BDT"}'</code>
-                                </div>
-                                <button class="copy-btn" onclick="copyToClipboard(getExampleCurl(3), this)">
-                                    📋 Copy
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div id="schema-tab" class="tab-content">
-                    <div class="schema-section">
-                        <h4>📋 Request Schema:</h4>
-                        <div class="json-schema">
-                            <pre><code>{
-  "assets": {
-    "cash": <span class="type">number</span>,      // নগদ অর্থ
-    "gold": <span class="type">number</span>,      // স্বর্ণের মূল্য
-    "silver": <span class="type">number</span>,    // রৌপ্যের মূল্য
-    "savings": <span class="type">number</span>,   // সঞ্চয়
-    "business": <span class="type">number</span>   // ব্যবসায়িক সম্পদ
-  },
-  "liabilities": {
-    "debts": <span class="type">number</span>,     // ঋণ
-    "expenses": <span class="type">number</span>  // মাসিক খরচ
-  },
-  "currency": <span class="type">"BDT"</span>     // মুদ্রা (ঐচ্ছিক)
-}</code></pre>
-                        </div>
-                        
-                        <h4>📋 Response Schema:</h4>
-                        <div class="json-schema">
-                            <pre><code>{
-  "success": <span class="type">true</span>,
-  "calculation": {
-    "total_assets": <span class="type">number</span>,
-    "total_liabilities": <span class="type">number</span>,
-    "net_wealth": <span class="type">number</span>,
-    "nisab_threshold": <span class="type">number</span>,
-    "is_zakat_applicable": <span class="type">boolean</span>,
-    "zakat_amount": <span class="type">number</span>,
-    "zakat_percentage": <span class="type">2.5</span>,
-    "currency": <span class="type">"BDT"</span>
-  }
-}</code></pre>
-                        </div>
-                    </div>
-                </div>
-                
-                <div id="test-tab" class="tab-content">
-                    <div class="api-tester">
-                        <h4>🧪 API টেস্ট করুন:</h4>
-                        <div class="test-form">
-                            <div class="test-input-group">
-                                <label>নগদ অর্থ (BDT):</label>
-                                <input type="number" id="test-cash" placeholder="0">
-                            </div>
-                            <div class="test-input-group">
-                                <label>স্বর্ণ (BDT):</label>
-                                <input type="number" id="test-gold" placeholder="0">
-                            </div>
-                            <div class="test-input-group">
-                                <label>ঋণ (BDT):</label>
-                                <input type="number" id="test-debts" placeholder="0">
-                            </div>
-                            <button class="test-btn" onclick="testApi()">
-                                🚀 API টেস্ট করুন
-                            </button>
-                        </div>
-                        <div id="test-result" class="test-result"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="footer">
-            <div class="bismillah">بسم الله الرحمن الرحيم</div>
-            <p>Zakat is 2.5% of wealth that exceeds the Nisab threshold | Nisab: 87.48 grams of gold</p>
-            <div class="developed-by">
-                Developed by <a href="https://github.com/eiaserbd" target="_blank" class="github-link">Eiaser Hosen</a>
-            </div>
-            <div class="dua">May Allah accept this effort.</div>
-        </div>
-    </div>
-    
-    <div id="toast" class="toast">
-        <span class="toast-icon">✅</span>
-        <span>Copied to clipboard!</span>
-    </div>
-    
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Remove the default selected 0 state; keep input empty
-            document.querySelectorAll('input[type="number"]').forEach(input => {
-                if (input.value === '0') input.value = '';
-            });
-        });
+  <main class="page">
+    <section class="hero">
+      <div class="eyebrow">Islamic Wealth Tool</div>
+      <h1>Smart Zakat Calculator</h1>
+      <p>
+        Enter your assets and liabilities, pick a Nisab basis, and get a clearer answer with practical guidance.
+        The calculator uses the live values served by this API.
+      </p>
+      <div class="quote">
+        "Pay Zakat to purify your wealth and support those in need."
+      </div>
+    </section>
 
-        async function calculateZakat() {
-            const assets = {
-                cash: parseFloat(document.getElementById('cash').value) || 0,
-                gold: parseFloat(document.getElementById('gold').value) || 0,
-                silver: parseFloat(document.getElementById('silver').value) || 0,
-                savings: parseFloat(document.getElementById('savings').value) || 0,
-                business: parseFloat(document.getElementById('business').value) || 0
-            };
-            
-            const liabilities = {
-                debts: parseFloat(document.getElementById('debts').value) || 0,
-                expenses: parseFloat(document.getElementById('expenses').value) || 0
-            };
-            
-            try {
-                const response = await fetch('/api/calculate', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ assets, liabilities, currency: 'BDT' })
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    const calc = data.calculation;
-                    
-                    document.getElementById('totalAssets').textContent = calc.total_assets.toLocaleString() + ' BDT';
-                    document.getElementById('totalLiabilities').textContent = calc.total_liabilities.toLocaleString() + ' BDT';
-                    document.getElementById('netWealth').textContent = calc.net_wealth.toLocaleString() + ' BDT';
-                    document.getElementById('nisab').textContent = calc.nisab_threshold.toLocaleString() + ' BDT';
-                    document.getElementById('zakatApplicable').textContent = calc.is_zakat_applicable ? '✅ Yes' : '❌ No';
-                    
-                    if (calc.is_zakat_applicable) {
-                        document.getElementById('zakatAmount').innerHTML = `🕌 Zakat Payable: ${calc.zakat_amount.toLocaleString()} BDT (${calc.zakat_percentage}% of net wealth)`;
-                    } else {
-                        document.getElementById('zakatAmount').innerHTML = `⚠️ Zakat not applicable (wealth below Nisab threshold)`;
-                    }
-                    
-                    document.getElementById('result').classList.add('show');
-                }
-            } catch (error) {
-                alert('Error calculating zakat: ' + error.message);
-            }
+    <section class="layout">
+      <form class="panel" id="zakatForm">
+        <h2>Enter Your Wealth</h2>
+        <p class="muted">All values are in the selected currency.</p>
+
+        <div class="grid" style="margin-top: 18px;">
+          <div class="field">
+            <label for="currency">Currency</label>
+            <select id="currency" name="currency">
+              <option value="BDT">BDT</option>
+              <option value="USD">USD</option>
+              <option value="EUR">EUR</option>
+              <option value="GBP">GBP</option>
+              <option value="CAD">CAD</option>
+              <option value="AUD">AUD</option>
+              <option value="INR">INR</option>
+              <option value="PKR">PKR</option>
+              <option value="SAR">SAR</option>
+              <option value="AED">AED</option>
+              <option value="MYR">MYR</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="nisabBasis">Nisab Basis</label>
+            <select id="nisabBasis" name="nisabBasis">
+              <option value="gold">Gold</option>
+              <option value="silver">Silver</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="cash">Cash</label>
+            <input id="cash" name="cash" type="number" min="0" step="0.01" placeholder="0">
+          </div>
+          <div class="field">
+            <label for="gold">Gold value</label>
+            <input id="gold" name="gold" type="number" min="0" step="0.01" placeholder="0">
+          </div>
+          <div class="field">
+            <label for="silver">Silver value</label>
+            <input id="silver" name="silver" type="number" min="0" step="0.01" placeholder="0">
+          </div>
+          <div class="field">
+            <label for="savings">Savings</label>
+            <input id="savings" name="savings" type="number" min="0" step="0.01" placeholder="0">
+          </div>
+          <div class="field">
+            <label for="investments">Investments</label>
+            <input id="investments" name="investments" type="number" min="0" step="0.01" placeholder="0">
+          </div>
+          <div class="field">
+            <label for="business">Business assets</label>
+            <input id="business" name="business" type="number" min="0" step="0.01" placeholder="0">
+          </div>
+          <div class="field">
+            <label for="receivables">Receivables</label>
+            <input id="receivables" name="receivables" type="number" min="0" step="0.01" placeholder="0">
+          </div>
+          <div class="field">
+            <label for="otherAssets">Other eligible assets</label>
+            <input id="otherAssets" name="otherAssets" type="number" min="0" step="0.01" placeholder="0">
+          </div>
+          <div class="field">
+            <label for="debts">Short-term debts</label>
+            <input id="debts" name="debts" type="number" min="0" step="0.01" placeholder="0">
+          </div>
+          <div class="field">
+            <label for="expenses">Immediate expenses</label>
+            <input id="expenses" name="expenses" type="number" min="0" step="0.01" placeholder="0">
+          </div>
+          <div class="field">
+            <label for="payables">Other payables</label>
+            <input id="payables" name="payables" type="number" min="0" step="0.01" placeholder="0">
+          </div>
+          <div class="field">
+            <label for="otherLiabilities">Other deductions</label>
+            <input id="otherLiabilities" name="otherLiabilities" type="number" min="0" step="0.01" placeholder="0">
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="primary" type="submit" id="submitButton">Calculate Zakat</button>
+          <button class="secondary" type="button" id="resetButton">Reset</button>
+        </div>
+        <div class="status" id="statusText"></div>
+      </form>
+
+      <section class="panel summary" id="resultPanel">
+        <div>
+          <h2>Calculation Summary</h2>
+          <p class="muted" id="nisabMeta">Loading Nisab data...</p>
+        </div>
+
+        <div class="stat">
+          <div class="stat-label">Total Assets</div>
+          <div class="stat-value" id="totalAssets">0 BDT</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Total Liabilities</div>
+          <div class="stat-value" id="totalLiabilities">0 BDT</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Net Wealth</div>
+          <div class="stat-value" id="netWealth">0 BDT</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Selected Nisab Threshold</div>
+          <div class="stat-value" id="nisabValue">0 BDT</div>
+        </div>
+
+        <div class="hero-result low" id="heroResult">
+          <div id="heroTitle">No calculation yet</div>
+          <div class="amount" id="zakatAmount">0 BDT</div>
+          <div id="heroSubtitle">Fill in your values and calculate to see the result.</div>
+        </div>
+      </section>
+    </section>
+
+    <section class="panel insights">
+      <h2>Smart Guidance</h2>
+      <p class="muted">The API analyzes your numbers and returns helpful guidance, not only the final Zakat amount.</p>
+      <div class="insights-list" id="insightsList">
+        <div class="insight">
+          <strong>Ready to help</strong>
+          Enter your assets and liabilities, then calculate to see personalized guidance about Nisab, deductions, and Zakat due.
+        </div>
+      </div>
+    </section>
+
+    <section class="docs">
+      <h2>API</h2>
+      <p class="muted">Use these endpoints in your website, mobile app, or backend service to fetch Nisab values and calculate Zakat.</p>
+      <pre id="apiExample"></pre>
+    </section>
+  </main>
+
+  <script>
+    const form = document.getElementById('zakatForm');
+    const submitButton = document.getElementById('submitButton');
+    const resetButton = document.getElementById('resetButton');
+    const currencySelect = document.getElementById('currency');
+    const nisabBasisSelect = document.getElementById('nisabBasis');
+    const statusText = document.getElementById('statusText');
+    const apiExample = document.getElementById('apiExample');
+    const inputs = Array.from(document.querySelectorAll('input[type="number"]'));
+
+    function formatMoney(amount, currency) {
+      return new Intl.NumberFormat('en-US', {
+        maximumFractionDigits: 2,
+        minimumFractionDigits: 0
+      }).format(amount) + ' ' + currency;
+    }
+
+    function buildPayload() {
+      return {
+        currency: currencySelect.value,
+        nisab_basis: nisabBasisSelect.value,
+        assets: {
+          cash: Number(document.getElementById('cash').value || 0),
+          gold: Number(document.getElementById('gold').value || 0),
+          silver: Number(document.getElementById('silver').value || 0),
+          savings: Number(document.getElementById('savings').value || 0),
+          investments: Number(document.getElementById('investments').value || 0),
+          business: Number(document.getElementById('business').value || 0),
+          receivables: Number(document.getElementById('receivables').value || 0),
+          other: Number(document.getElementById('otherAssets').value || 0)
+        },
+        liabilities: {
+          debts: Number(document.getElementById('debts').value || 0),
+          expenses: Number(document.getElementById('expenses').value || 0),
+          payables: Number(document.getElementById('payables').value || 0),
+          other: Number(document.getElementById('otherLiabilities').value || 0)
         }
-        
-        async function copyToClipboard(text, button) {
-            try {
-                await navigator.clipboard.writeText(text);
-                showToast();
-                animateButton(button);
-            } catch (err) {
-                // Fallback for older browsers
-                const textArea = document.createElement('textarea');
-                textArea.value = text;
-                document.body.appendChild(textArea);
-                textArea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textArea);
-                showToast();
-                animateButton(button);
-            }
-        }
-        
-        function showToast() {
-            const toast = document.getElementById('toast');
-            toast.classList.add('show');
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
-        }
-        
-        function animateButton(button) {
-            button.classList.add('copied');
-            button.innerHTML = '✅ Copied!';
-            setTimeout(() => {
-                button.classList.remove('copied');
-                button.innerHTML = '📋 Copy';
-            }, 2000);
-        }
-        
-        // API Documentation Functions
-        function switchTab(tabName) {
-            // Hide all tabs
-            const tabs = document.querySelectorAll('.tab-content');
-            tabs.forEach(tab => tab.classList.remove('active'));
-            
-            // Remove active class from all buttons
-            const buttons = document.querySelectorAll('.tab-btn');
-            buttons.forEach(btn => btn.classList.remove('active'));
-            
-            // Show selected tab
-            document.getElementById(tabName + '-tab').classList.add('active');
-            
-            // Add active class to clicked button
-            event.target.classList.add('active');
-        }
-        
-        function getFullApiUrl() {
-            const currentUrl = window.location.origin;
-            return currentUrl + '/api/calculate';
-        }
-        
-        function getExampleCurl(exampleNum) {
-            const baseUrl = getFullApiUrl();
-            const examples = {
-                1: `curl -X POST ${baseUrl} -H "Content-Type: application/json" -d '{"assets":{"cash":500000,"gold":100000,"silver":50000,"savings":200000,"business":300000},"liabilities":{"debts":50000,"expenses":10000},"currency":"BDT"}'`,
-                2: `curl -X POST ${baseUrl} -H "Content-Type: application/json" -d '{"assets":{"cash":1000000},"liabilities":{},"currency":"BDT"}'`,
-                3: `curl -X POST ${baseUrl} -H "Content-Type: application/json" -d '{"assets":{"gold":200000,"silver":100000},"liabilities":{"debts":25000},"currency":"BDT"}'`
-            };
-            return examples[exampleNum];
-        }
-        
-        async function testApi() {
-            const testResult = document.getElementById('test-result');
-            const cash = parseFloat(document.getElementById('test-cash').value) || 0;
-            const gold = parseFloat(document.getElementById('test-gold').value) || 0;
-            const debts = parseFloat(document.getElementById('test-debts').value) || 0;
-            
-            const testData = {
-                assets: { cash, gold },
-                liabilities: { debts },
-                currency: 'BDT'
-            };
-            
-            try {
-                testResult.innerHTML = '<div style="color: #ffd700;">⏳ Testing API...</div>';
-                testResult.className = 'test-result';
-                testResult.style.display = 'block';
-                
-                const response = await fetch('/api/calculate', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(testData)
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    testResult.innerHTML = `
-                        <div style="color: #28a745; font-weight: bold; margin-bottom: 10px;">✅ API Test Successful!</div>
-                        <div style="color: #adb5bd; font-size: 0.9rem;">
-                            <strong>Input:</strong> Cash: ${cash.toLocaleString()} BDT, Gold: ${gold.toLocaleString()} BDT, Debts: ${debts.toLocaleString()} BDT<br>
-                            <strong>Result:</strong> Net Wealth: ${data.calculation.net_wealth.toLocaleString()} BDT<br>
-                            <strong>Zakat:</strong> ${data.calculation.is_zakat_applicable ? 
-                                `${data.calculation.zakat_amount.toLocaleString()} BDT (${data.calculation.zakat_percentage}%)` : 
-                                'Not applicable (below Nisab)'}
-                        </div>
-                    `;
-                    testResult.classList.add('success');
-                } else {
-                    throw new Error('API returned error');
-                }
-            } catch (error) {
-                testResult.innerHTML = `
-                    <div style="color: #dc3545; font-weight: bold; margin-bottom: 10px;">❌ API Test Failed</div>
-                    <div style="color: #adb5bd; font-size: 0.9rem;">Error: ${error.message}</div>
-                `;
-                testResult.classList.add('error');
-            }
-        }
-        
-        // Initialize API URLs on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            const fullUrl = getFullApiUrl();
-            document.getElementById('full-api-url').textContent = fullUrl;
-            
-            // Update example URLs
-            for (let i = 1; i <= 3; i++) {
-                const exampleUrl = getFullApiUrl();
-                document.getElementById(`example-url-${i}`).textContent = exampleUrl;
-            }
+      };
+    }
+
+    function setBusy(isBusy, message) {
+      submitButton.disabled = isBusy;
+      submitButton.textContent = isBusy ? 'Calculating...' : 'Calculate Zakat';
+      statusText.textContent = message || '';
+    }
+
+    function setNisabMeta(data) {
+      const basis = nisabBasisSelect.value;
+      const current = data.nisab[basis];
+      document.getElementById('nisabMeta').textContent =
+        `Gold Nisab: ${formatMoney(data.nisab.gold.value, data.currency)} | Silver Nisab: ${formatMoney(data.nisab.silver.value, data.currency)} | Showing ${basis} basis.`;
+      document.getElementById('nisabValue').textContent = formatMoney(current.value, data.currency);
+    }
+
+    function updateInsights(insights) {
+      const container = document.getElementById('insightsList');
+      if (!insights || insights.length === 0) {
+        container.innerHTML = '<div class="insight"><strong>Ready to help</strong>Enter your assets and liabilities, then calculate to see personalized guidance about Nisab, deductions, and Zakat due.</div>';
+        return;
+      }
+
+      container.innerHTML = insights.map((item) => {
+        return `<div class="insight"><strong>${item.title}</strong>${item.message}</div>`;
+      }).join('');
+    }
+
+    function updateResults(data) {
+      const currency = data.currency;
+      document.getElementById('totalAssets').textContent = formatMoney(data.calculation.total_assets, currency);
+      document.getElementById('totalLiabilities').textContent = formatMoney(data.calculation.total_liabilities, currency);
+      document.getElementById('netWealth').textContent = formatMoney(data.calculation.net_wealth, currency);
+      document.getElementById('nisabValue').textContent = formatMoney(data.calculation.nisab_threshold, currency);
+      document.getElementById('zakatAmount').textContent = formatMoney(data.calculation.zakat_amount, currency);
+
+      const heroResult = document.getElementById('heroResult');
+      const heroTitle = document.getElementById('heroTitle');
+      const heroSubtitle = document.getElementById('heroSubtitle');
+
+      if (data.calculation.is_zakat_applicable) {
+        heroResult.classList.remove('low');
+        heroTitle.textContent = 'Zakat is payable';
+        heroSubtitle.textContent = `Calculated at ${data.calculation.zakat_percentage}% on your net eligible wealth.`;
+      } else {
+        heroResult.classList.add('low');
+        heroTitle.textContent = 'Zakat is not payable yet';
+        heroSubtitle.textContent = 'Your net wealth is below the selected Nisab threshold.';
+      }
+
+      updateInsights(data.insights);
+      setNisabMeta(data);
+    }
+
+    async function refreshNisab() {
+      const response = await fetch(`/api/nisab?currency=${encodeURIComponent(currencySelect.value)}`);
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || 'Unable to load Nisab values.');
+      }
+
+      setNisabMeta(data);
+      apiExample.textContent = [
+        `GET ${window.location.origin}/api/nisab?currency=${data.currency}`,
+        '',
+        `POST ${window.location.origin}/api/calculate`,
+        'Content-Type: application/json',
+        '',
+        '// Supported currencies: BDT, USD, EUR, GBP, CAD, AUD, INR, PKR, SAR, AED, MYR',
+        '',
+        JSON.stringify({
+          assets: { cash: 500000, gold: 125000, savings: 220000 },
+          liabilities: { debts: 70000, expenses: 25000 },
+          currency: data.currency,
+          nisab_basis: nisabBasisSelect.value
+        }, null, 2)
+      ].join('\n');
+    }
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const payload = buildPayload();
+
+      setBusy(true, 'Submitting your numbers to the API...');
+      try {
+        const response = await fetch('/api/calculate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
         });
-    </script>
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          throw new Error(data.error || 'Calculation failed.');
+        }
+
+        updateResults(data);
+        setBusy(false, 'Calculation complete.');
+      } catch (error) {
+        setBusy(false, error.message);
+      }
+    });
+
+    resetButton.addEventListener('click', () => {
+      form.reset();
+      inputs.forEach((input) => {
+        input.value = '';
+      });
+      statusText.textContent = 'Form reset.';
+      refreshNisab().catch((error) => {
+        statusText.textContent = error.message;
+      });
+      updateInsights([]);
+      document.getElementById('totalAssets').textContent = `0 ${currencySelect.value}`;
+      document.getElementById('totalLiabilities').textContent = `0 ${currencySelect.value}`;
+      document.getElementById('netWealth').textContent = `0 ${currencySelect.value}`;
+      document.getElementById('zakatAmount').textContent = `0 ${currencySelect.value}`;
+      document.getElementById('heroResult').classList.add('low');
+      document.getElementById('heroTitle').textContent = 'No calculation yet';
+      document.getElementById('heroSubtitle').textContent = 'Fill in your values and calculate to see the result.';
+    });
+
+    currencySelect.addEventListener('change', () => {
+      refreshNisab().catch((error) => {
+        statusText.textContent = error.message;
+      });
+    });
+
+    nisabBasisSelect.addEventListener('change', () => {
+      refreshNisab().catch((error) => {
+        statusText.textContent = error.message;
+      });
+    });
+
+    refreshNisab().catch((error) => {
+      statusText.textContent = error.message;
+    });
+  </script>
 </body>
 </html>

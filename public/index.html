@@ -40,9 +40,14 @@
         
         .header {
             text-align: center;
-            color: white;
+            color: #ffffff;
             margin-bottom: 40px;
             animation: slideDown 1s ease-out;
+            border: 1px solid rgba(255, 215, 0, 0.5);
+            padding: 15px;
+            border-radius: 20px;
+            background: rgba(0, 0, 0, 0.20);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
         }
         
         .header h1 {
@@ -83,13 +88,19 @@
         .section-title {
             font-size: 1.4rem;
             font-weight: bold;
-            color: #2d3748;
+            color: #204020;
             margin-bottom: 20px;
             padding-bottom: 15px;
-            border-bottom: 3px solid #ffd700;
+            border-bottom: 3px solid #1f7a1f;
             display: flex;
             align-items: center;
             gap: 10px;
+        }
+        .section-title::before {
+            content: '🕌';
+            display: inline-block;
+            margin-right: 6px;
+            font-size: 1.2rem;
         }
         
         .input-group {
@@ -248,15 +259,16 @@
         }
         
         .api-info {
-            background: linear-gradient(135deg, #343a40 0%, #495057 100%);
+            background: linear-gradient(135deg, #123324 0%, #245536 100%);
             padding: 25px;
             border-radius: 15px;
             margin-top: 25px;
             font-family: 'Courier New', monospace;
             font-size: 13px;
-            color: #adb5bd;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #d0f4de;
+            border: 1px solid rgba(255, 255, 255, 0.2);
             position: relative;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
         }
         
         .api-header {
@@ -569,23 +581,23 @@
                 <div class="section-title">💰 Assets (Wealth)</div>
                 <div class="input-group">
                     <label>Cash in Hand/Bank (BDT)</label>
-                    <input type="number" id="cash" placeholder="0" value="0">
+                    <input type="number" id="cash" placeholder="Enter amount" min="0" value="">
                 </div>
                 <div class="input-group">
                     <label>Gold (value in BDT)</label>
-                    <input type="number" id="gold" placeholder="0" value="0">
+                    <input type="number" id="gold" placeholder="Enter amount" min="0" value="">
                 </div>
                 <div class="input-group">
                     <label>Silver (value in BDT)</label>
-                    <input type="number" id="silver" placeholder="0" value="0">
+                    <input type="number" id="silver" placeholder="Enter amount" min="0" value="">
                 </div>
                 <div class="input-group">
                     <label>Savings/Investments (BDT)</label>
-                    <input type="number" id="savings" placeholder="0" value="0">
+                    <input type="number" id="savings" placeholder="Enter amount" min="0" value="">
                 </div>
                 <div class="input-group">
                     <label>Business Assets (BDT)</label>
-                    <input type="number" id="business" placeholder="0" value="0">
+                    <input type="number" id="business" placeholder="Enter amount" min="0" value="">
                 </div>
             </div>
             
@@ -788,6 +800,13 @@
     </div>
     
     <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Remove the default selected 0 state; keep input empty
+            document.querySelectorAll('input[type="number"]').forEach(input => {
+                if (input.value === '0') input.value = '';
+            });
+        });
+
         async function calculateZakat() {
             const assets = {
                 cash: parseFloat(document.getElementById('cash').value) || 0,
